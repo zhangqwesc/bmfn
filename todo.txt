@@ -1,0 +1,4 @@
+现有Org0和Org1
+#1、在Org0上install chaincode，能否在Org1上实例化
+    Done   不能
+2、在Org0上install chaincode并instantiation，但instantiation时指定背书策略为AND('Org0.member', 'Org1.member)，然后在Org0上invoke, 验证Orderer是否接受此交易

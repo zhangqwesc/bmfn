@@ -1,0 +1,14 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: zhang.com
+    Specs:
+      - Hostname: orderer
+PeerOrgs:
+  - Name: Org0
+    Domain: org0.zhang.com
+    Template:
+      Count: 1
+  - Name: Org1
+    Domain: org1.zhang.com
+    Template:
+      Count: 1

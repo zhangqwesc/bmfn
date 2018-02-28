@@ -1,0 +1,4 @@
+docker image:
+    hyperledger/fabric-peer:x86_64-1.1.0-alpha
+    hyperledger/fabric-orderer:x86_64-1.1.0-alpha
+    hyperledger/fabric-tools:x86_64-1.1.0-alpha
