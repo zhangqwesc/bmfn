@@ -64,6 +64,9 @@ function networkUp() {
     docker-compose up -d
     echo 
     echo "started"
+    echo 
+    echo "Follow cli's log"
+    docker logs -f cli
 }
 
 MODE=$1
@@ -71,6 +74,8 @@ if [ "$MODE" == "up" ]; then
     networkUp
 elif [ "$MODE" == "down" ]; then
     docker-compose down
+    docker ps -a | grep dev-peer | awk '{print $1}' | while read LINE; do docker stop $LINE; docker rm $LINE; done
+    docker images | grep dev-peer | awk '{print $3}' | while read LINE; do docker rmi $LINE; done
     echo "stoped"
 else 
     echo "wrong command"

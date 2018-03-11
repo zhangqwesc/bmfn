@@ -74,11 +74,16 @@ echo '##########################################'
 echo '##### instantiate chaincode for Org0 #####'
 echo '##########################################'
 peer chaincode instantiate -o orderer.zhang.com:7050 --tls --cafile $ORDERERCAFILE \
-    -C mychannel -n mycc -v 1.0 -c '{"Args":["init", "pop", "300", "bob", "500"]}' -P "OR ('Org0MSP.peer', 'Org1MSP.peer')"
+    -C mychannel -n mycc -v 1.0 -c '{"Args":["init", "pop", "300"]}' -P "OR ('Org0MSP.peer', 'Org1MSP.peer')"
 if [ "$?" -ne 0 ]; then 
     echo "Something wrong"
     exit 1
 fi
+
+echo '############### Sleep 5s ############'
+echo '### wait for chaicode instantiate ###'
+echo 
+sleep 5s
 
 echo '############### QUERY ###############'
 peer chaincode query -C mychannel -n mycc -v 1.0 -c '{"Args":["query", "pop"]}'
@@ -86,9 +91,32 @@ if [ "$?" -ne 0 ]; then
     echo "Something wrong"
     exit 1
 fi
-#setEnvironments 1
+setEnvironments 1
 peer chaincode query -C mychannel -n mycc -v 1.0 -c '{"Args":["query", "pop"]}'
 if [ "$?" -ne 0 ]; then 
     echo "Something wrong"
     exit 1
 fi
+setEnvironments 0
+
+echo '############### INVOKE on Org0 ################'
+peer chaincode invoke -C mychannel -n mycc -v 1.0 -c '{"Args":["add", "pop", "17"]}'
+
+echo '############### INVOKE on Org1 ################'
+setEnvironments 1
+peer chaincode invoke -C mychannel -n mycc -v 1.0 -c '{"Args":["add", "pop", "2"]}'
+setEnvironments 0
+
+echo '############### QUERY ###############'
+peer chaincode query -C mychannel -n mycc -v 1.0 -c '{"Args":["query", "pop"]}'
+if [ "$?" -ne 0 ]; then 
+    echo "Something wrong"
+    exit 1
+fi
+setEnvironments 1
+peer chaincode query -C mychannel -n mycc -v 1.0 -c '{"Args":["query", "pop"]}'
+if [ "$?" -ne 0 ]; then 
+    echo "Something wrong"
+    exit 1
+fi
+setEnvironments 0

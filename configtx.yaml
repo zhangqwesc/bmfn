@@ -3,7 +3,7 @@ Profiles:
     Orderer:
       OrdererType: solo
       Addresses:
-        - orderer.zhang.com
+        - orderer.zhang.com:7050
       BatchTimeout: 2s
 
       # Batch Size: Controls the number of messages batched into a block

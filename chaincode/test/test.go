@@ -84,3 +84,10 @@ func (t *myChainCode) query(stub shim.ChaincodeStubInterface, args []string) pb.
 	fmt.Printf("Query %s: %s\n", Key, string(valBytes))
 	return shim.Success(valBytes)
 }
+
+func main() {
+	err := shim.Start(new(myChainCode))
+	if err != nil {
+		fmt.Printf("Error starting myChainCode:%v\n", err)
+	}
+}
