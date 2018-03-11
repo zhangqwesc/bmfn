@@ -39,7 +39,8 @@ fi
 setEnvironments 0
 
 #update anchor peer for org0
-peer channel update -o orderer.zhang.com:7050 -c mychannel -f ./channel-artifacts/Org0MSPanchors.tx --tls --cafile $ORDERERCAFILE
+peer channel update -o orderer.zhang.com:7050 -c mychannel -f ./channel-artifacts/Org0MSPanchors.tx \
+    --tls --cafile $ORDERERCAFILE
 if [ "$?" -ne 0 ]; then 
     echo "Something wrong"
     exit 1
@@ -47,7 +48,8 @@ fi
 
 #update anchor peer for org1
 setEnvironments 1
-peer channel update -o orderer.zhang.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile $ORDERERCAFILE
+peer channel update -o orderer.zhang.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx \
+    --tls --cafile $ORDERERCAFILE
 if [ "$?" -ne 0 ]; then 
     echo "Something wrong"
     exit 1
@@ -67,23 +69,25 @@ setEnvironments 1
 peer chaincode install -n mycc -v 1.0 -p "github.com/chaincode/test"
 setEnvironments 0
 
-#instantiate chaincode for org1
-echo '#################################'
-echo '##### instantiate chaincode #####'
-echo '#################################'
-peer chaincode instantiate -o orderer.zhang.com:7050 --tls --cafile $ORDERERCAFILE -C mychannel -n mycc -v 1.0 -c '{"Args":["init", "pop", "300"]}' -P "OR ('Org0MSP.peer', 'Org1MSP.peer')"
+#instantiate chaincode for org0
+echo '##########################################'
+echo '##### instantiate chaincode for Org0 #####'
+echo '##########################################'
+peer chaincode instantiate -o orderer.zhang.com:7050 --tls --cafile $ORDERERCAFILE \
+    -C mychannel -n mycc -v 1.0 -c '{"Args":["init", "pop", "300", "bob", "500"]}' -P "OR ('Org0MSP.peer', 'Org1MSP.peer')"
 if [ "$?" -ne 0 ]; then 
     echo "Something wrong"
     exit 1
 fi
+
 echo '############### QUERY ###############'
-peer chaincode query -C mychannel -n mycc -c '{"Args":["query", "pop"]}'
+peer chaincode query -C mychannel -n mycc -v 1.0 -c '{"Args":["query", "pop"]}'
 if [ "$?" -ne 0 ]; then 
     echo "Something wrong"
     exit 1
 fi
-setEnvironments 1
-peer chaincode query -C mychannel -n mycc -c '{"Args":["query", "pop"]}'
+#setEnvironments 1
+peer chaincode query -C mychannel -n mycc -v 1.0 -c '{"Args":["query", "pop"]}'
 if [ "$?" -ne 0 ]; then 
     echo "Something wrong"
     exit 1
